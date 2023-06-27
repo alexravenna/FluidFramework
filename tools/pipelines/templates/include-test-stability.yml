@@ -193,8 +193,8 @@ jobs:
         - task: PublishPipelineArtifact@1
           displayName: Publish Artifact - Tinylicious Log
           inputs:
-            targetPath: '${{ parameters.buildDirectory }}/packages/test/test-end-to-end-tests/tinylicious_${{ parameters.stageName }}.log'
-            artifactName: 'tinyliciousLog_${{ parameters.stageName }}'
+            targetPath: '${{ parameters.buildDirectory }}/packages/test/test-end-to-end-tests/tinylicious_${{ parameters.stageName }}_${{ taskTest }}.log'
+            artifactName: 'tinyliciousLog_${{ parameters.stageName }}_ ${{ taskTest }}'
             publishLocation: 'pipeline'
           condition: and(failed(), eq(variables['logExists'], 'true'), contains('${{ taskTestStep }}', 'tinylicious'))
           continueOnError: true # Keep running subsequent tasks even if this one fails (e.g. the tinylicious log wasn't there)
