@@ -72,6 +72,7 @@ stages:
           checkoutSubmodules: ${{ parameters.checkoutSubmodules }}
           timeoutInMinutes: 360
           taskBuild : ${{ parameters.taskBuild }}
+          taskLint: false
           taskTest:
           - webpack
           - ci:test:mocha
