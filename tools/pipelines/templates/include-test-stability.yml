@@ -15,6 +15,10 @@ parameters:
   type: boolean
   default: true
 
+- name: taskLintName
+  type: string
+  default: lint
+
 - name: taskTest
   type: object
   default:
@@ -38,6 +42,14 @@ parameters:
 
 - name: stageName
   type: string
+
+- name: packageManager
+  type: string
+  default: npm
+
+- name: packageManagerInstallCommand
+  type: string
+  default: 'npm ci --unsafe-perm'
 
 jobs:
   # Job - Build
@@ -81,11 +93,10 @@ jobs:
       inputs:
         version: 16.x
 
-    - template: include-install-pnpm.yml
-      parameters:
-        buildDirectory: ${{ parameters.buildDirectory }}
-        # This pipeline experiences a high failure rate when the cache is enabled, so we disable it
-        enableCache: false
+    - ${{ if eq(parameters.packageManager, 'pnpm') }}:
+          - template: include-install-pnpm.yml
+            parameters:
+              buildDirectory: ${{ parameters.buildDirectory }}
 
     - task: Bash@3
       displayName: Install dependencies
@@ -93,7 +104,21 @@ jobs:
         targetType: 'inline'
         workingDirectory: ${{ parameters.buildDirectory }}
         script: |
-          pnpm i --frozen-lockfile
+          ${{ parameters.packageManagerInstallCommand }}
+
+    # - template: include-install-pnpm.yml
+    #  parameters:
+    #    buildDirectory: ${{ parameters.buildDirectory }}
+    #    # This pipeline experiences a high failure rate when the cache is enabled, so we disable it
+    #    enableCache: false
+
+    # - task: Bash@3
+    #   displayName: Install dependencies
+    #   inputs:
+    #    targetType: 'inline'
+    #    workingDirectory: ${{ parameters.buildDirectory }}
+    #    script: |
+    #      pnpm i --frozen-lockfile
 
     # Build
     - ${{ if ne(parameters.taskBuild, 'false') }}:
@@ -106,12 +131,20 @@ jobs:
 
     # Lint
     - ${{ if ne(parameters.taskLint, false) }}:
-      - task: Npm@1
-        displayName: npm run lint
-        inputs:
-          command: 'custom'
-          workingDir: ${{ parameters.buildDirectory }}
-          customCommand: 'run lint'
+        - task: Npm@1
+          displayName: npm run ${{ parameters.taskLintName }}
+          inputs:
+            command: 'custom'
+            workingDir: ${{ parameters.buildDirectory }}
+            customCommand: 'run ${{ parameters.taskLintName }}'
+      
+    # - ${{ if ne(parameters.taskLint, false) }}:
+    #   - task: Npm@1
+    #     displayName: npm run lint
+    #     inputs:
+    #       command: 'custom'
+    #       workingDir: ${{ parameters.buildDirectory }}
+    #       customCommand: 'run lint'
 
     # Test
     - ${{ if ne(convertToJson(parameters.taskTest), '[]') }}:
