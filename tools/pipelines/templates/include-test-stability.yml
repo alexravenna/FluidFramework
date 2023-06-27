@@ -183,7 +183,7 @@ jobs:
               if [ -f "$logFile" ]; then
                 echo "##vso[task.setvariable variable=LogExists]true"
                 stageName=${{ parameters.stageName }}
-                newname=$(echo $oldname | sed 's/\.log$/'"_$stageName_$taskTestStep.log"/)
+                newname=$(echo $logFile | sed 's/\.log$/'"_$stageName_$taskTestStep.log"/)
                 mv $logFile $newname
               else
                 echo "##vso[task.setvariable variable=LogExists]false"
