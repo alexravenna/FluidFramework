@@ -83,6 +83,7 @@ jobs:
             BuildDir=${{ parameters.buildDirectory }}
             Build=${{ parameters.taskBuild }}
             Lint=${{ parameters.taskLint }}
+            LintName: ${{ parameters.taskLintName }}
             Test=${{ convertToJson(parameters.taskTest) }}
             TestCoverage=$(testCoverage)
           "
@@ -117,13 +118,13 @@ jobs:
 
     # Lint
     - ${{ if ne(parameters.taskLint, false) }}:
-        - task: Npm@1
-          displayName: npm run ${{ parameters.taskLintName }}
-          inputs:
-            command: 'custom'
-            workingDir: ${{ parameters.buildDirectory }}
-            customCommand: 'run ${{ parameters.taskLintName }}'
-  
+      - task: Npm@1
+        displayName: npm run ${{ parameters.taskLintName }}
+        inputs:
+          command: 'custom'
+          workingDir: ${{ parameters.buildDirectory }}
+          customCommand: 'run ${{ parameters.taskLintName }}'
+
     # Test
     - ${{ if ne(convertToJson(parameters.taskTest), '[]') }}:
       # Set variable startTest if the build succeed so that we can run all the test tasks whether they are failed or not
