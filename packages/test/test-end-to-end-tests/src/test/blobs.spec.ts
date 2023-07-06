@@ -186,11 +186,12 @@ describeFullCompat("blobs", (getTestObjectProvider) => {
 	[false, true].forEach((enableGroupedBatching) => {
 		it(`attach sends ops with compression enabled and ${
 			enableGroupedBatching ? "grouped" : "regular"
-		} batching`, async function () {
+		} batching`, async () => {
 			// Tracked by AB#4130, the test run on the tinylicous driver is disabled temporarily to ensure normal operation of the build-client package pipeline
+			/*
 			if (provider.driver.type === "tinylicious" || provider.driver.type === "t9s") {
 				this.skip();
-			}
+			} */
 
 			const container = await provider.makeTestContainer({
 				...testContainerConfig,
