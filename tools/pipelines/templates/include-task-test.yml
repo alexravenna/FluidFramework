@@ -35,8 +35,8 @@ steps:
       workingDir: ${{ parameters.buildDirectory }}
       customCommand: 'run ${{ parameters.taskTestStep }}'
       condition: and(succeededOrFailed(), eq(variables['startTest'], 'true'))
-      env:
-        ${{ if contains(parameters.taskTestStep, 'tinylicious') }}:
-          # Disable colorization for tinylicious logs (not useful when printing to a file)
-          logger__colorize: "false" # Need to pass it as string so ADO doesn't convert it into False (capital F) which doesn't work
-          logger__morganFormat: tiny
+    env:
+      ${{ if contains(parameters.taskTestStep, 'tinylicious') }}:
+        # Disable colorization for tinylicious logs (not useful when printing to a file)
+        logger__colorize: "false" # Need to pass it as string so ADO doesn't convert it into False (capital F) which doesn't work
+        logger__morganFormat: tiny
