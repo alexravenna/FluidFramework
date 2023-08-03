@@ -141,7 +141,7 @@ jobs:
         displayName: Start Test
 
       - ${{ each taskTestStep in parameters.taskTest }}:
-        - template: include-task-test
+        - template: include-task-test.yml
           parameters:
             taskTestStep: ${{ taskTestStep }}
             buildDirectory: ${{ parameters.buildDirectory }}
