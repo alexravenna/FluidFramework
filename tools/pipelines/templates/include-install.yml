@@ -1,7 +1,7 @@
 # Copyright (c) Microsoft Corporation and contributors. All rights reserved.
 # Licensed under the MIT License.
 
-# include-install template for the install step in client build and test stability pileine
+# include-install template for the install step in client build and test stability pipeline
 
 parameters:
 - name: packageManager
