@@ -263,7 +263,7 @@ stages:
         - template: include-build-lint.yml 
           parameters:
             taskBuild: ${{ parameters.taskBuild }}
-            taskLint: $ {{ parameters.taskLint }}
+            taskLint: ${{ parameters.taskLint }}
             taskLintName: ${{ parameters.taskLintName }}
             buildDirectory: ${{ parameters.buildDirectory }}
 
