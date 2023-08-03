@@ -105,7 +105,7 @@ jobs:
     - template: include-install.yml 
       parameters:
         packageManager: ${{ parameters.packageManager }}
-        workingDirectory: ${{ parameters.buildDirectory }}
+        buildDirectory: ${{ parameters.buildDirectory }}
         packageManagerInstallCommand: ${{ parameters.packageManagerInstallCommand }}
 
     # Build
