@@ -21,6 +21,8 @@ steps:
       customCommand: 'run ${{ taskTestStep }}:coverage'
     condition: and(succeededOrFailed(), eq(variables['startTest'], 'true'))
     env:
+      # Tests can use this environment variable to behave differently when running from a test branch
+      TEST_BRANCH: $(testBuild)
       ${{ if contains(parameters.taskTestStep, 'tinylicious') }}:
         # Disable colorization for tinylicious logs (not useful when printing to a file)
         logger__colorize: "false" # Need to pass it as string so ADO doesn't convert it into False (capital F) which doesn't work
@@ -36,6 +38,8 @@ steps:
       customCommand: 'run ${{ parameters.taskTestStep }}'
       condition: and(succeededOrFailed(), eq(variables['startTest'], 'true'))
     env:
+      # Tests can use this environment variable to behave differently when running from a test branch
+      TEST_BRANCH: $(testBuild)
       ${{ if contains(parameters.taskTestStep, 'tinylicious') }}:
         # Disable colorization for tinylicious logs (not useful when printing to a file)
         logger__colorize: "false" # Need to pass it as string so ADO doesn't convert it into False (capital F) which doesn't work
