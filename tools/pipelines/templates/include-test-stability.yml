@@ -102,6 +102,8 @@ jobs:
     #     workingDirectory: ${{ parameters.buildDirectory }}
     #     script: |
     #       ${{ parameters.packageManagerInstallCommand }}
+    - template: include-use-node-version.yml
+    
     - template: include-install.yml 
       parameters:
         packageManager: ${{ parameters.packageManager }}

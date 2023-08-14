@@ -240,6 +240,8 @@ stages:
                   exit -1;
                 fi
               fi
+        
+        - template: include-use-node-version.yml
 
         - template: include-install.yml 
           parameters:
