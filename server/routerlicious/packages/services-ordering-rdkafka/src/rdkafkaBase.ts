@@ -7,8 +7,8 @@ import { EventEmitter } from "events";
 import { Lumberjack } from "@fluidframework/server-services-telemetry";
 import { IContextErrorData } from "@fluidframework/server-services-core";
 import type * as kafkaTypes from "node-rdkafka";
-import { tryImportNodeRdkafka } from "./tryImport";
 import * as log from "winston";
+import { tryImportNodeRdkafka } from "./tryImport";
 
 export interface IKafkaBaseOptions {
 	numberOfPartitions: number;
