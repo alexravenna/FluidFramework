@@ -533,7 +533,9 @@ export class ScribeLambda implements IPartitionLambda {
 					message.type !== MessageType.ClientLeave
 				) {
 					const clonedMessage = _.cloneDeep(message);
-					clonedMessage.contents = JSON.parse(typeof clonedMessage.contents === "string" ? clonedMessage.contents : "N/A");
+					clonedMessage.contents = JSON.parse(
+						typeof clonedMessage.contents === "string" ? clonedMessage.contents : "N/A",
+					);
 					this.protocolHandler.processMessage(clonedMessage, false);
 				} else {
 					this.protocolHandler.processMessage(message, false);
