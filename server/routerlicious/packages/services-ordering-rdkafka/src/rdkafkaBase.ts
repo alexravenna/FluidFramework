@@ -8,6 +8,7 @@ import { Lumberjack } from "@fluidframework/server-services-telemetry";
 import { IContextErrorData } from "@fluidframework/server-services-core";
 import type * as kafkaTypes from "node-rdkafka";
 import { tryImportNodeRdkafka } from "./tryImport";
+import * as log from "winston";
 
 export interface IKafkaBaseOptions {
 	numberOfPartitions: number;
@@ -57,6 +58,8 @@ export abstract class RdkafkaBase extends EventEmitter {
 		const rdKafkaHasSSLEnabled = kafka.features.filter((feature) =>
 			feature.toLowerCase().includes("ssl"),
 		);
+
+		log.error("REBALANCING PROCEDURE!!!!!!!!!!");
 
 		if (options?.sslCACertFilePath) {
 			// If the use of SSL is desired, but rdkafka has not been built with SSL support,

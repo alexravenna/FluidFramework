@@ -120,6 +120,7 @@ export class RdkafkaConsumer extends RdkafkaBase implements IConsumer {
 		let consumer: kafkaTypes.KafkaConsumer;
 
 		const options: kafkaTypes.ConsumerGlobalConfig = {
+			"debug": "all",
 			"metadata.broker.list": this.endpoints.kafka.join(","),
 			"socket.keepalive.enable": true,
 			"socket.nagle.disable": true,

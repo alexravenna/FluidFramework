@@ -947,6 +947,7 @@ importers:
       sillyname: ^0.1.0
       sinon: ^9.2.3
       typescript: ~4.5.5
+      winston: ^3.6.0
     dependencies:
       '@fluidframework/common-utils': 1.1.1
       '@fluidframework/server-services-client': link:../services-client
@@ -956,6 +957,7 @@ importers:
       nconf: 0.12.0
       node-rdkafka: 2.16.1
       sillyname: 0.1.0
+      winston: 3.9.0
     devDependencies:
       '@fluid-tools/build-cli': 0.22.0_mmpl2z7rynse2pmynonhikz2qy
       '@fluidframework/build-common': 2.0.0

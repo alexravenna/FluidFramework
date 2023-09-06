@@ -113,6 +113,7 @@ export class RdkafkaProducer extends RdkafkaBase implements IProducer {
 		}
 
 		const options: kafkaTypes.ProducerGlobalConfig = {
+			"debug": "all",
 			"metadata.broker.list": this.endpoints.kafka.join(","),
 			"socket.keepalive.enable": true,
 			"socket.nagle.disable": true,
