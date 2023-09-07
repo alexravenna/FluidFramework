@@ -123,7 +123,11 @@ export abstract class RdkafkaBase extends EventEmitter {
 			...this.sslOptions,
 		};
 
+		log.error("Before creating Admin Client");
+
 		const adminClient = this.kafka.AdminClient.create(options);
+
+		log.error("After creating Admin Client");
 
 		const newTopic: kafkaTypes.NewTopic = {
 			topic: this.topic,
