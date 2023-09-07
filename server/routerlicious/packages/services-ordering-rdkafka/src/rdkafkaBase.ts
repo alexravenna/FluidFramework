@@ -8,7 +8,6 @@ import { Lumberjack } from "@fluidframework/server-services-telemetry";
 import { IContextErrorData } from "@fluidframework/server-services-core";
 import type * as kafkaTypes from "node-rdkafka";
 import * as log from "winston";
-import * as segfaultHandler from "node-segfault-handler";
 import { tryImportNodeRdkafka } from "./tryImport";
 
 export interface IKafkaBaseOptions {
@@ -38,8 +37,6 @@ export abstract class RdkafkaBase extends EventEmitter {
 		options?: Partial<IKafkaBaseOptions>,
 	) {
 		super();
-
-		segfaultHandler.registerHandler();
 
 		const kafka = tryImportNodeRdkafka();
 		if (!kafka) {

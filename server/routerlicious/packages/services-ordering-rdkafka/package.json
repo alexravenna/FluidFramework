@@ -34,10 +34,9 @@
 		"@fluidframework/server-services-telemetry": "workspace:~",
 		"events": "^3.1.0",
 		"nconf": "^0.12.0",
-		"node-rdkafka": "^2.16.1",
+		"node-rdkafka": "^2.17.0",
 		"sillyname": "^0.1.0",
-		"winston": "^3.6.0",
-		"node-segfault-handler": "^1.4.2"
+		"winston": "^3.6.0"
 	},
 	"devDependencies": {
 		"@fluid-tools/build-cli": "^0.22.0",
