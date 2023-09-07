@@ -13,6 +13,7 @@ import {
 	IZookeeperClient,
 	ZookeeperClientConstructor,
 } from "@fluidframework/server-services-core";
+import * as log from "winston";
 import { IKafkaBaseOptions, IKafkaEndpoints, RdkafkaBase } from "./rdkafkaBase";
 
 export interface IKafkaConsumerOptions extends Partial<IKafkaBaseOptions> {
@@ -138,9 +139,13 @@ export class RdkafkaConsumer extends RdkafkaBase implements IConsumer {
 			...this.sslOptions,
 		};
 
+		log.error("Before creating Kafka Consumer");
+
 		consumer = this.consumer = new this.kafka.KafkaConsumer(options, {
 			"auto.offset.reset": "latest",
 		});
+
+		log.error("After creating Kafka Consumer");
 
 		consumer.setDefaultConsumeTimeout(this.consumerOptions.consumeTimeout);
 		consumer.setDefaultConsumeLoopTimeoutDelay(this.consumerOptions.consumeLoopTimeoutDelay);
@@ -308,7 +313,11 @@ export class RdkafkaConsumer extends RdkafkaBase implements IConsumer {
 			this.emit("log", event);
 		});
 
+		log.error("Before Kafka Consumer connecting");
+
 		consumer.connect();
+
+		log.error("After Kafka Consumer connecting");
 	}
 
 	public async close(reconnecting: boolean = false): Promise<void> {

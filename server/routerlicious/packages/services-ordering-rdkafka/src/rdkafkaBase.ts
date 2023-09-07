@@ -59,7 +59,7 @@ export abstract class RdkafkaBase extends EventEmitter {
 			feature.toLowerCase().includes("ssl"),
 		);
 
-		log.error("REBALANCING PROCEDURE!!!!!!!!!!");
+		log.error("Before setting SSL options");
 
 		if (options?.sslCACertFilePath) {
 			// If the use of SSL is desired, but rdkafka has not been built with SSL support,
@@ -90,6 +90,8 @@ export abstract class RdkafkaBase extends EventEmitter {
 				"sasl.password": options?.eventHubConnString,
 			};
 		}
+
+		log.error("After setting SSL options");
 
 		setTimeout(() => void this.initialize(), 1);
 	}

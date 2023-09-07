@@ -15,7 +15,7 @@ import {
 import { NetworkError } from "@fluidframework/server-services-client";
 import { Lumberjack, getLumberBaseProperties } from "@fluidframework/server-services-telemetry";
 import { Deferred } from "@fluidframework/common-utils";
-
+import * as log from "winston";
 import { IKafkaBaseOptions, IKafkaEndpoints, RdkafkaBase } from "./rdkafkaBase";
 
 /**
@@ -126,8 +126,12 @@ export class RdkafkaProducer extends RdkafkaBase implements IProducer {
 			...this.sslOptions,
 		};
 
+		log.error("Before creating Kafka Producer");
+
 		const producer: kafkaTypes.Producer = (this.connectingProducer =
 			new this.kafka.HighLevelProducer(options, this.producerOptions.topicConfig));
+
+		log.error("After creating Kafka Producer");
 
 		producer.on("ready", () => {
 			this.connectedProducer = producer;
@@ -176,7 +180,11 @@ export class RdkafkaProducer extends RdkafkaBase implements IProducer {
 			this.emit("log", event);
 		});
 
+		log.error("Before Kafka Producer connecting");
+
 		producer.connect();
+
+		log.error("After Kafka Producer connecting");
 
 		producer.setPollInterval(this.producerOptions.pollIntervalMs);
 	}
