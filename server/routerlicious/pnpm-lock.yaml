@@ -942,6 +942,7 @@ importers:
       events: ^3.1.0
       nconf: ^0.12.0
       node-rdkafka: ^2.16.1
+      node-segfault-handler: ^1.4.2
       prettier: ~2.6.2
       rimraf: ^4.4.0
       sillyname: ^0.1.0
@@ -956,6 +957,7 @@ importers:
       events: 3.3.0
       nconf: 0.12.0
       node-rdkafka: 2.16.1
+      node-segfault-handler: 1.4.2
       sillyname: 0.1.0
       winston: 3.9.0
     devDependencies:
@@ -12037,6 +12039,14 @@ packages:
   /node-releases/2.0.12:
     resolution: {integrity: sha512-QzsYKWhXTWx8h1kIvqfnC++o0pEmpRQA/aenALsL2F4pqNVr7YzcdMlDij5WBnwftRbJCNJL/O7zdKaxKPHqgQ==}
     dev: true
+
+  /node-segfault-handler/1.4.2:
+    resolution: {integrity: sha512-JQPbceuzO24YC6A5i/kYPQaVRv+QJ6qSlDbBnr4dx8l8WyS/h3nF4AQDmQZwgnOjgifwtoNx3O+akkhnceATig==}
+    requiresBuild: true
+    dependencies:
+      bindings: 1.5.0
+      nan: 2.17.0
+    dev: false
 
   /noms/0.0.0:
     resolution: {integrity: sha512-lNDU9VJaOPxUmXcLb+HQFeUgQQPtMI24Gt6hgfuMHRJgMRHMF/qZ4HJD3GDru4sSw9IQl2jPjAYnQrdIeLbwow==}
