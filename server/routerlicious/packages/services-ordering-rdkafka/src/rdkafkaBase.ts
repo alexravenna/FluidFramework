@@ -106,6 +106,7 @@ export abstract class RdkafkaBase extends EventEmitter {
 
 			this.connect();
 		} catch (ex) {
+			log.error(`Caught an error in catch block of rdkafkaBase: ${ex}`);
 			this.error(ex);
 
 			this.initialize().catch((error) => {
@@ -135,16 +136,24 @@ export abstract class RdkafkaBase extends EventEmitter {
 			replication_factor: this.options.replicationFactor,
 		};
 
+		log.error("Before invoking create topic promise");
+
 		return new Promise<void>((resolve, reject) => {
+			log.error("Before creating topic");
 			adminClient.createTopic(newTopic, 10000, (err) => {
+				log.error("Entering create topic callback");
+
 				adminClient.disconnect();
 
 				if (err && err.code !== this.kafka.CODES.ERRORS.ERR_TOPIC_ALREADY_EXISTS) {
+					log.error(`Exiting create topic callback with error code: ${err.code}`);
 					reject(err);
 				} else {
+					log.error("Exiting create topic callback successfully");
 					resolve();
 				}
 			});
+			log.error("After creating topic");
 		});
 	}
 
