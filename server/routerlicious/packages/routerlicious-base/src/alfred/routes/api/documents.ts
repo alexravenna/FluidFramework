@@ -63,6 +63,10 @@ export function create(
 	const externalHistorianUrl: string = config.get("worker:blobStorageUrl");
 	const externalDeltaStreamUrl: string =
 		config.get("worker:deltaStreamUrl") || externalOrdererUrl;
+	const messageBrokerName: string = crypto
+		.createHash("sha1")
+		.update(config.get("kafka:lib:endpoint") ?? "")
+		.digest("hex");
 	const sessionStickinessDurationMs: number | undefined = config.get(
 		"alfred:sessionStickinessDurationMs",
 	);
@@ -275,6 +279,7 @@ export function create(
 				documentId,
 				documentRepository,
 				sessionStickinessDurationMs,
+				messageBrokerName,
 			);
 			handleResponse(session, response, false);
 		},

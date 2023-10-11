@@ -73,12 +73,14 @@ async function updateExistingSession(
 	documentRepository: IDocumentRepository,
 	sessionStickinessDurationMs: number,
 	lumberjackProperties: Record<string, any>,
+	messageBrokerName?: string,
 ): Promise<ISession> {
 	let updatedDeli: string | undefined;
 	let updatedScribe: string | undefined;
 	let updatedOrdererUrl: string | undefined;
 	let updatedHistorianUrl: string | undefined;
 	let updatedDeltaStreamUrl: string | undefined;
+	let updatedMessageBrokerName: string | undefined;
 	// Session stickiness keeps the a given document in 1 location for the configured
 	// stickiness duration after the session ends. In the case of periodic op backup, this can ensure
 	// that ops are backed up to a global location before a session is allowed to move.
@@ -108,7 +110,8 @@ async function updateExistingSession(
 		if (
 			existingSession.ordererUrl !== ordererUrl ||
 			existingSession.historianUrl !== historianUrl ||
-			existingSession.deltaStreamUrl !== deltaStreamUrl
+			existingSession.deltaStreamUrl !== deltaStreamUrl ||
+			existingSession.messageBrokerName !== messageBrokerName
 		) {
 			// Previous session was in a different location. Move to current location.
 			// Reset logOffset, ordererUrl, and historianUrl when moving session location.
@@ -126,6 +129,7 @@ async function updateExistingSession(
 			updatedOrdererUrl = ordererUrl;
 			updatedHistorianUrl = historianUrl;
 			updatedDeltaStreamUrl = deltaStreamUrl;
+			updatedMessageBrokerName = messageBrokerName;
 			if (document.deli !== "") {
 				const deli = JSON.parse(document.deli);
 				deli.logOffset = -1;
@@ -145,6 +149,7 @@ async function updateExistingSession(
 		ordererUrl: updatedOrdererUrl ?? existingSession.ordererUrl,
 		historianUrl: updatedHistorianUrl ?? existingSession.historianUrl,
 		deltaStreamUrl: updatedDeltaStreamUrl ?? existingSession.deltaStreamUrl,
+		messageBrokerName: updatedMessageBrokerName ?? existingSession.messageBrokerName,
 		// Update the status to isSessionAlive=true, since the session is now discovered.
 		isSessionAlive: true,
 		// If session was not alive, it cannot be "active"
@@ -251,6 +256,7 @@ export async function getSession(
 	documentId: string,
 	documentRepository: IDocumentRepository,
 	sessionStickinessDurationMs: number = defaultSessionStickinessDurationMs,
+	messageBrokerName?: string,
 ): Promise<ISession> {
 	const lumberjackProperties = getLumberBaseProperties(documentId, tenantId);
 
@@ -296,6 +302,7 @@ export async function getSession(
 		documentRepository,
 		sessionStickinessDurationMs,
 		lumberjackProperties,
+		messageBrokerName,
 	);
 	return convertSessionToFreshSession(updatedSession, lumberjackProperties);
 }
