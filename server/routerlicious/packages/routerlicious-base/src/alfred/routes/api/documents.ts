@@ -67,6 +67,7 @@ export function create(
 		.createHash("sha1")
 		.update(config.get("kafka:lib:endpoint") ?? "")
 		.digest("hex");
+	Lumberjack.warning(`messageBrokerName: ${messageBrokerName}.`);
 	const sessionStickinessDurationMs: number | undefined = config.get(
 		"alfred:sessionStickinessDurationMs",
 	);

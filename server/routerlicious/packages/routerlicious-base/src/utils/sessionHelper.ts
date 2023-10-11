@@ -21,11 +21,13 @@ async function createNewSession(
 	documentId,
 	documentRepository: IDocumentRepository,
 	lumberjackProperties: Record<string, any>,
+	messageBrokerName?: string,
 ): Promise<ISession> {
 	const newSession: ISession = {
 		ordererUrl,
 		historianUrl,
 		deltaStreamUrl,
+		messageBrokerName,
 		isSessionAlive: true,
 		isSessionActive: false,
 	};
@@ -123,6 +125,7 @@ async function updateExistingSession(
 					ordererUrl: existingSession.ordererUrl,
 					historianUrl: existingSession.historianUrl,
 					deltaStreamUrl: existingSession.deltaStreamUrl,
+					messageBrokerName: existingSession.messageBrokerName,
 				},
 				newSessionLocation: { ordererUrl, historianUrl, deltaStreamUrl },
 			});
@@ -281,6 +284,7 @@ export async function getSession(
 			documentId,
 			documentRepository,
 			lumberjackProperties,
+			messageBrokerName,
 		);
 		return convertSessionToFreshSession(newSession, lumberjackProperties);
 	}
