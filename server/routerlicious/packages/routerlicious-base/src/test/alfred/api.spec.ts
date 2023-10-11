@@ -769,6 +769,8 @@ describe("Routerlicious", () => {
 										deltaStreamUrl:
 											defaultProvider.get("worker:deltaStreamUrl"),
 										historianUrl: defaultProvider.get("worker:blobStorageUrl"),
+										messageBrokerName:
+											"da39a3ee5e6b4b0d3255bfef95601890afd80709",
 										isSessionAlive: false,
 										isSessionActive: true,
 									},
@@ -784,6 +786,7 @@ describe("Routerlicious", () => {
 									ordererUrl: defaultProvider.get("worker:serverUrl"),
 									historianUrl: defaultProvider.get("worker:blobStorageUrl"),
 									deltaStreamUrl: defaultProvider.get("worker:deltaStreamUrl"),
+									messageBrokerName: "da39a3ee5e6b4b0d3255bfef95601890afd80709",
 									isSessionAlive: false,
 									isSessionActive: false,
 								});
@@ -799,6 +802,7 @@ describe("Routerlicious", () => {
 									ordererUrl: defaultProvider.get("worker:serverUrl"),
 									historianUrl: defaultProvider.get("worker:blobStorageUrl"),
 									deltaStreamUrl: defaultProvider.get("worker:deltaStreamUrl"),
+									messageBrokerName: "da39a3ee5e6b4b0d3255bfef95601890afd80709",
 									isSessionAlive: false,
 									isSessionActive: true,
 								});
