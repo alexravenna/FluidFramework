@@ -29,6 +29,7 @@ import {
 	ISegment,
 	ISegmentAction,
 	LocalReferencePosition,
+	// eslint-disable-next-line import/no-deprecated
 	matchProperties,
 	MergeTreeDeltaType,
 	PropertySet,
@@ -148,6 +149,7 @@ export abstract class SharedSegmentSequence<T extends ISegment>
 					if (
 						lastAnnotate &&
 						lastAnnotate.pos2 === r.position &&
+						// eslint-disable-next-line import/no-deprecated
 						matchProperties(lastAnnotate.props, props)
 					) {
 						lastAnnotate.pos2 += r.segment.cachedLength;
@@ -340,6 +342,7 @@ export abstract class SharedSegmentSequence<T extends ISegment>
 		refType: ReferenceType,
 		properties: PropertySet | undefined,
 		slidingPreference?: SlidingPreference,
+		canSlideToEndpoint?: boolean,
 	): LocalReferencePosition {
 		return this.client.createLocalReferencePosition(
 			segment,
@@ -347,6 +350,7 @@ export abstract class SharedSegmentSequence<T extends ISegment>
 			refType,
 			properties,
 			slidingPreference,
+			canSlideToEndpoint,
 		);
 	}
 
@@ -452,7 +456,7 @@ export abstract class SharedSegmentSequence<T extends ISegment>
 	}
 
 	/**
-	 * @returns - The most recent sequence number which has been acked by the server and processed by this
+	 * @returns The most recent sequence number which has been acked by the server and processed by this
 	 * SharedSegmentSequence.
 	 */
 	public getCurrentSeq() {
@@ -489,6 +493,7 @@ export abstract class SharedSegmentSequence<T extends ISegment>
 	 * @returns An iterable object that enumerates the IntervalCollection labels.
 	 *
 	 * @example
+	 *
 	 * ```typescript
 	 * const iter = this.getIntervalCollectionKeys();
 	 * for (key of iter)
@@ -704,7 +709,7 @@ export abstract class SharedSegmentSequence<T extends ISegment>
 	 * {@inheritDoc @fluidframework/shared-object-base#SharedObjectCore.applyStashedOp}
 	 */
 	protected applyStashedOp(content: any): unknown {
-		return this.client.applyStashedOp(content);
+		return this.client.applyStashedOp(parseHandles(content, this.serializer));
 	}
 
 	private summarizeMergeTree(serializer: IFluidSerializer): ISummaryTreeWithStats {

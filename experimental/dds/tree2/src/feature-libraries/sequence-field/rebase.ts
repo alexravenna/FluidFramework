@@ -5,12 +5,11 @@
 
 import { assert, unreachableCase } from "@fluidframework/core-utils";
 import { StableId } from "@fluidframework/runtime-definitions";
-import { fail } from "../../util";
+import { IdAllocator, fail, fakeIdAllocator } from "../../util";
 import { ChangeAtomId, ChangesetLocalId, RevisionTag, TaggedChange } from "../../core";
 import {
 	CrossFieldManager,
 	CrossFieldTarget,
-	IdAllocator,
 	NodeExistenceState,
 	RevisionMetadataSource,
 } from "../modular-schema";
@@ -597,7 +596,8 @@ function amendRebaseI<TNodeChange>(
 		baseMarks,
 		undefined,
 		rebasedMarks,
-		() => fail("Should not generate new IDs when applying move effects"),
+		// Should not generate new IDs when applying move effects
+		fakeIdAllocator,
 		moveEffects,
 		revisionMetadata,
 	);

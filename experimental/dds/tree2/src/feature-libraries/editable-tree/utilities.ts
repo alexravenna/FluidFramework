@@ -6,11 +6,10 @@
 import { assert } from "@fluidframework/core-utils";
 import { isStableId } from "@fluidframework/container-runtime";
 import {
-	DetachedField,
 	FieldKey,
 	TreeStoredSchema,
 	UpPath,
-	keyAsDetachedField,
+	getDetachedFieldContainingPath,
 	rootField,
 } from "../../core";
 import { brand } from "../../util";
@@ -18,7 +17,8 @@ import { valueSymbol } from "../contextuallyTyped";
 import { FieldKinds } from "../default-field-kinds";
 import { StableNodeKey } from "../node-key";
 import { getField } from "../untypedTree";
-import { EditableTree, TreeStatus } from "./editableTreeTypes";
+import { TreeStatus } from "../editable-tree-2";
+import { EditableTree } from "./editableTreeTypes";
 
 /**
  * @returns true iff `schema` trees should default to being viewed as just their value when possible.
@@ -105,23 +105,6 @@ export function getStableNodeKey(
 		);
 		return brand(id);
 	}
-}
-
-/**
- * Checks whether or not a given path is parented under the root field.
- * @param path - the path you want to check.
- * @returns the {@link DetachedField} which contains the path.
- */
-export function getDetachedFieldContainingPath(path: UpPath): DetachedField {
-	let currentPath = path;
-	while (currentPath !== undefined) {
-		if (currentPath.parent === undefined) {
-			return keyAsDetachedField(currentPath.parentField);
-		} else {
-			currentPath = currentPath.parent;
-		}
-	}
-	return keyAsDetachedField(path.parentField);
 }
 
 /**
