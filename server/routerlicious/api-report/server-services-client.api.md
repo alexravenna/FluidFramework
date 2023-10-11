@@ -374,6 +374,7 @@ export interface ISession {
     historianUrl: string;
     isSessionActive: boolean;
     isSessionAlive: boolean;
+    messageBrokerName?: string;
     ordererUrl: string;
 }
 

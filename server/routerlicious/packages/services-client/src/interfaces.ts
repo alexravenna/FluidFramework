@@ -25,7 +25,7 @@ export interface ISession {
 	 */
 	historianUrl: string;
 	/**
-	 * Message broker name
+	 * Message broker name of the session
 	 */
 	messageBrokerName?: string;
 	/**
