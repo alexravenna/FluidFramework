@@ -206,6 +206,7 @@ export function create(
 				values,
 				enableDiscovery,
 				isEphemeral,
+				messageBrokerName,
 			);
 
 			// Handle backwards compatibility for older driver versions.
