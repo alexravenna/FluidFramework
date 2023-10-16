@@ -129,6 +129,7 @@ export class DocumentStorage implements IDocumentStorage {
 		values: [string, ICommittedProposal][],
 		enableDiscovery: boolean = false,
 		isEphemeralContainer: boolean = false,
+		messageBrokerId?: string,
 	): Promise<IDocumentDetails> {
 		const storageName = await this.storageNameAssigner?.assign(tenantId, documentId);
 		const gitManager = await this.tenantManager.getTenantGitManager(
@@ -251,6 +252,7 @@ export class DocumentStorage implements IDocumentStorage {
 			ordererUrl,
 			historianUrl,
 			deltaStreamUrl,
+			messageBrokerId,
 			isSessionAlive: true,
 			isSessionActive: false,
 		};
