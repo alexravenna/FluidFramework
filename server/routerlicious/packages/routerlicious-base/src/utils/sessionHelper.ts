@@ -83,7 +83,7 @@ async function updateExistingSession(
 	let updatedOrdererUrl: string | undefined;
 	let updatedHistorianUrl: string | undefined;
 	let updatedDeltaStreamUrl: string | undefined;
-	let updatedMessageBrokerId: string | undefined;
+	let updatedMessageBrokerId: string | undefined = existingSession.messageBrokerId;
 	// Session stickiness keeps the given document in 1 location for the configured
 	// stickiness duration after the session ends. In the case of periodic op backup, this can ensure
 	// that ops are backed up to a global location before a session is allowed to move.
@@ -159,8 +159,7 @@ async function updateExistingSession(
 		isSessionActive: false,
 	};
 	// if undefined and added directly to the session object - will be serialized as null in mongo which is undesirable
-	const newMessageBrokerId = updatedMessageBrokerId ?? existingSession.messageBrokerId;
-	if (newMessageBrokerId) updatedSession.messageBrokerId = newMessageBrokerId;
+	if (updatedMessageBrokerId) updatedSession.messageBrokerId = updatedMessageBrokerId;
 	try {
 		const result = await documentRepository.findOneAndUpdate(
 			{
