@@ -70,7 +70,6 @@ export function create(
 					.update(config.get("kafka:lib:endpoint") ?? "")
 					.digest("hex")
 			: undefined;
-	Lumberjack.info(`documents.ts | messageBrokerId : ${messageBrokerId}`);
 	const sessionStickinessDurationMs: number | undefined = config.get(
 		"alfred:sessionStickinessDurationMs",
 	);
@@ -232,11 +231,12 @@ export function create(
 						ordererUrl: externalOrdererUrl,
 						historianUrl: externalHistorianUrl,
 						deltaStreamUrl: externalDeltaStreamUrl,
-						messageBrokerId,
 						// Indicate to consumer that session was newly created.
 						isSessionAlive: false,
 						isSessionActive: false,
 					};
+					// if undefined and added directly to the session object - will be serialized as null in mongo which is undesirable
+					if (messageBrokerId) session.messageBrokerId = messageBrokerId;
 					responseBody.session = session;
 				}
 				handleResponse(

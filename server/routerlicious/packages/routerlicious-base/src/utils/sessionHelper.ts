@@ -27,10 +27,11 @@ async function createNewSession(
 		ordererUrl,
 		historianUrl,
 		deltaStreamUrl,
-		messageBrokerId,
 		isSessionAlive: true,
 		isSessionActive: false,
 	};
+	// if undefined and added directly to the session object - will be serialized as null in mongo which is undesirable
+	if (messageBrokerId) newSession.messageBrokerId = messageBrokerId;
 	try {
 		await documentRepository.updateOne(
 			{
@@ -152,12 +153,14 @@ async function updateExistingSession(
 		ordererUrl: updatedOrdererUrl ?? existingSession.ordererUrl,
 		historianUrl: updatedHistorianUrl ?? existingSession.historianUrl,
 		deltaStreamUrl: updatedDeltaStreamUrl ?? existingSession.deltaStreamUrl,
-		messageBrokerId: updatedMessageBrokerId ?? existingSession.messageBrokerId,
 		// Update the status to isSessionAlive=true, since the session is now discovered.
 		isSessionAlive: true,
 		// If session was not alive, it cannot be "active"
 		isSessionActive: false,
 	};
+	// if undefined and added directly to the session object - will be serialized as null in mongo which is undesirable
+	const newMessageBrokerId = updatedMessageBrokerId ?? existingSession.messageBrokerId;
+	if (newMessageBrokerId) updatedSession.messageBrokerId = newMessageBrokerId;
 	try {
 		const result = await documentRepository.findOneAndUpdate(
 			{
