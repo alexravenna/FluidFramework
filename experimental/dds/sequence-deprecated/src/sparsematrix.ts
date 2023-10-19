@@ -3,7 +3,7 @@
  * Licensed under the MIT License.
  */
 
-import { assert } from "@fluidframework/common-utils";
+import { assert } from "@fluidframework/core-utils";
 import { IFluidHandle } from "@fluidframework/core-interfaces";
 import { BaseSegment, IJSONSegment, ISegment, PropertySet } from "@fluidframework/merge-tree";
 import {
@@ -14,9 +14,10 @@ import {
 	Serializable,
 	Jsonable,
 } from "@fluidframework/datastore-definitions";
-import { SharedSegmentSequence, SubSequence } from "@fluidframework/sequence";
 import { ISharedObject } from "@fluidframework/shared-object-base";
+import { SharedSegmentSequence } from "@fluidframework/sequence";
 import { pkgVersion } from "./packageVersion";
+import { SubSequence } from "./sharedSequence";
 
 /**
  * An empty segment that occupies 'cachedLength' positions.

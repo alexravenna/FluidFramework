@@ -19,7 +19,7 @@ export class CheckpointContext {
 		private readonly id: string,
 		private readonly checkpointManager: IDeliCheckpointManager,
 		private readonly context: IContext,
-		private readonly checkpointService: ICheckpointService,
+		private readonly checkpointService: ICheckpointService | undefined,
 	) {}
 
 	/**
@@ -43,6 +43,9 @@ export class CheckpointContext {
 		}
 
 		let databaseCheckpointFailed = false;
+		const lumberjackProperties = {
+			...getLumberBaseProperties(this.id, this.tenantId),
+		};
 
 		// Database checkpoint
 		try {
@@ -59,11 +62,7 @@ export class CheckpointContext {
 					},
 				},
 			);
-			Lumberjack.error(
-				`Error writing checkpoint to the database`,
-				getLumberBaseProperties(this.id, this.tenantId),
-				ex,
-			);
+			Lumberjack.error(`Error writing checkpoint to the database`, lumberjackProperties, ex);
 			databaseCheckpointFailed = true;
 		}
 
@@ -92,16 +91,12 @@ export class CheckpointContext {
 						},
 					},
 				);
-				Lumberjack.error(
-					`Error writing checkpoint to the kafka`,
-					getLumberBaseProperties(this.id, this.tenantId),
-					ex,
-				);
+				Lumberjack.error(`Error writing checkpoint to the kafka`, lumberjackProperties, ex);
 			}
 		} else {
 			Lumberjack.info(
 				`Skipping kafka checkpoint due to database checkpoint failure.`,
-				getLumberBaseProperties(this.id, this.tenantId),
+				lumberjackProperties,
 			);
 			databaseCheckpointFailed = false;
 		}
@@ -111,7 +106,9 @@ export class CheckpointContext {
 		if (this.pendingCheckpoint) {
 			const pendingCheckpoint = this.pendingCheckpoint;
 			this.pendingCheckpoint = undefined;
-			void this.checkpoint(pendingCheckpoint);
+			this.checkpoint(pendingCheckpoint).catch((error) => {
+				Lumberjack.error("Error writing checkpoint", lumberjackProperties, error);
+			});
 		}
 	}
 
@@ -119,7 +116,10 @@ export class CheckpointContext {
 		this.closed = true;
 	}
 
-	private checkpointCore(checkpoint: ICheckpointParams, globalCheckpointOnly: boolean = false) {
+	private async checkpointCore(
+		checkpoint: ICheckpointParams,
+		globalCheckpointOnly: boolean = false,
+	) {
 		// Exit early if already closed
 		if (this.closed) {
 			return;
@@ -127,13 +127,14 @@ export class CheckpointContext {
 
 		let updateP: Promise<void>;
 
-		const localCheckpointEnabled = this.checkpointService.localCheckpointEnabled;
+		const localCheckpointEnabled = this.checkpointService?.localCheckpointEnabled;
 
 		// determine if checkpoint is local
 		const isLocal =
 			globalCheckpointOnly === true
 				? false
-				: localCheckpointEnabled && checkpoint.reason !== CheckpointReason.NoClients;
+				: localCheckpointEnabled === true &&
+				  checkpoint.reason !== CheckpointReason.NoClients;
 
 		if (checkpoint.clear) {
 			updateP = this.checkpointManager.deleteCheckpoint(checkpoint, isLocal);
@@ -147,7 +148,6 @@ export class CheckpointContext {
 			);
 		}
 
-		// eslint-disable-next-line @typescript-eslint/promise-function-async
 		return updateP.catch((error) => {
 			this.context.log?.error(
 				`Error writing checkpoint to MongoDB: ${JSON.stringify(error)}`,

@@ -12,11 +12,12 @@ import {
 } from "@fluid-tools/version-tools";
 
 import { getFluidBuildConfig } from "./fluidUtils";
-import { Logger, defaultLogger } from "./logging";
 import { MonoRepo } from "./monoRepo";
 import { Package, Packages } from "./npmPackage";
 import { ExecAsyncResult } from "./utils";
 import { TaskDefinitionsOnDisk } from "./fluidTaskDefinitions";
+import registerDebug from "debug";
+const traceInit = registerDebug("fluid-build:init");
 
 /**
  * Fluid build configuration that is expected in the repo-root package.json.
@@ -31,14 +32,9 @@ export interface IFluidBuildConfig {
 	 * A mapping of package or release group names to metadata about the package or release group. This can only be
 	 * configured in the repo-wide Fluid build config (the repo-root package.json).
 	 */
-	repoPackages: {
+	repoPackages?: {
 		[name: string]: IFluidRepoPackageEntry;
 	};
-
-	/**
-	 * @deprecated
-	 */
-	generatorName?: string;
 
 	/**
 	 * Policy configuration for the `check:policy` command. This can only be configured in the rrepo-wide Fluid build
@@ -156,6 +152,53 @@ export interface PolicyConfig {
 	 * exclude that rule from being checked.
 	 */
 	handlerExclusions?: { [rule: string]: string[] };
+
+	packageNames?: PackageNamePolicyConfig;
+}
+
+/**
+ * Configuration for package naming and publication policies.
+ */
+export interface PackageNamePolicyConfig {
+	/**
+	 * A list of package scopes that are permitted in the repo.
+	 */
+	allowedScopes?: string[];
+	/**
+	 * A list of packages that have no scope.
+	 */
+	unscopedPackages?: string[];
+	/**
+	 * Packages that must be published.
+	 */
+	mustPublish: {
+		/**
+		 * A list of package names or scopes that must publish to npm, and thus should never be marked private.
+		 */
+		npm?: string[];
+
+		/**
+		 * A list of package names or scopes that must publish to an internal feed, and thus should always be marked
+		 * private.
+		 */
+		internalFeed?: string[];
+	};
+
+	/**
+	 * Packages that may or may not be published.
+	 */
+	mayPublish: {
+		/**
+		 * A list of package names or scopes that may publish to npm, and thus might or might not be marked private.
+		 */
+		npm?: string[];
+
+		/**
+		 * A list of package names or scopes that must publish to an internal feed, and thus might or might not be marked
+		 * private.
+		 */
+		internalFeed?: string[];
+	};
 }
 
 /**
@@ -216,7 +259,7 @@ export class FluidRepo {
 
 	public readonly packages: Packages;
 
-	constructor(public readonly resolvedRoot: string, log: Logger = defaultLogger) {
+	constructor(public readonly resolvedRoot: string) {
 		const packageManifest = getFluidBuildConfig(resolvedRoot);
 
 		// Expand to full IFluidRepoPackage and full path
@@ -227,7 +270,7 @@ export class FluidRepo {
 				return item.map((entry) => normalizeEntry(entry) as IFluidRepoPackage);
 			}
 			if (typeof item === "string") {
-				log?.verbose(
+				traceInit(
 					`No defaultInterdependencyRange setting found for '${item}'. Defaulting to "${DEFAULT_INTERDEPENDENCY_RANGE}".`,
 				);
 				return {
@@ -256,7 +299,7 @@ export class FluidRepo {
 				}
 				continue;
 			}
-			const monoRepo = MonoRepo.load(group, item, log);
+			const monoRepo = MonoRepo.load(group, item);
 			if (monoRepo) {
 				this.releaseGroups.set(group, monoRepo);
 				loadedPackages.push(...monoRepo.packages);
@@ -275,29 +318,24 @@ export class FluidRepo {
 		this.packages.packages.forEach((pkg) => pkg.reload());
 	}
 
-	public static async ensureInstalled(packages: Package[], check: boolean = true) {
+	public static async ensureInstalled(packages: Package[]) {
 		const installedMonoRepo = new Set<MonoRepo>();
 		const installPromises: Promise<ExecAsyncResult>[] = [];
 		for (const pkg of packages) {
-			if (!check || !(await pkg.checkInstall(false))) {
-				if (pkg.monoRepo) {
-					if (!installedMonoRepo.has(pkg.monoRepo)) {
-						installedMonoRepo.add(pkg.monoRepo);
-						installPromises.push(pkg.monoRepo.install());
-					}
-				} else {
-					installPromises.push(pkg.install());
+			if (pkg.monoRepo) {
+				if (!installedMonoRepo.has(pkg.monoRepo)) {
+					installedMonoRepo.add(pkg.monoRepo);
+					installPromises.push(pkg.monoRepo.install());
 				}
+			} else {
+				installPromises.push(pkg.install());
 			}
 		}
 		const rets = await Promise.all(installPromises);
 		return !rets.some((ret) => ret.error);
 	}
 
-	public async install(nohoist: boolean = false) {
-		if (nohoist) {
-			return this.packages.noHoistInstall(this.resolvedRoot);
-		}
+	public async install() {
 		return FluidRepo.ensureInstalled(this.packages.packages);
 	}
 

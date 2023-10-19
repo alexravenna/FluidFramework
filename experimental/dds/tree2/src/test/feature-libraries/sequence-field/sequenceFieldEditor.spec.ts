@@ -4,20 +4,17 @@
  */
 
 import { strict as assert } from "assert";
-import { jsonString } from "../../../domains";
-import {
-	ChangesetLocalId,
-	SequenceField as SF,
-	singleTextCursor,
-} from "../../../feature-libraries";
+import { leaf } from "../../../domains";
+import { ChangesetLocalId } from "../../../core";
+import { SequenceField as SF, singleTextCursor } from "../../../feature-libraries";
 import { brand } from "../../../util";
 import { deepFreeze } from "../../utils";
 import { TestChange } from "../../testChange";
 import { TestChangeset, MarkMaker as Mark } from "./testEdits";
 
 const id: ChangesetLocalId = brand(0);
-const nodeX = { type: jsonString.name, value: "X" };
-const nodeY = { type: jsonString.name, value: "Y" };
+const nodeX = { type: leaf.string.name, value: "X" };
+const nodeY = { type: leaf.string.name, value: "Y" };
 const content = [singleTextCursor(nodeX), singleTextCursor(nodeY)];
 deepFreeze(content);
 

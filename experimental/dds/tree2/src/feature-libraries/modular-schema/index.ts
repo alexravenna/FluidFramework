@@ -17,20 +17,11 @@ export {
 	CrossFieldMap,
 	CrossFieldQuerySet,
 	CrossFieldTarget,
-	idAllocatorFromMaxId,
 	setInCrossFieldMap,
 } from "./crossFieldQueries";
-export { ChangesetLocalId, ChangeAtomId } from "./modularChangeTypes";
 export { ChangesetLocalIdSchema, EncodedChangeAtomId } from "./modularChangeFormat";
+export { FieldKind, FullSchemaPolicy, Multiplicity, FieldKindWithEditor } from "./fieldKind";
 export {
-	FieldKind,
-	FullSchemaPolicy,
-	Multiplicity,
-	BrandedFieldKind,
-	brandedFieldKind,
-} from "./fieldKind";
-export {
-	IdAllocator,
 	FieldChangeHandler,
 	FieldChangeRebaser,
 	FieldEditor,
@@ -38,7 +29,6 @@ export {
 	NodeChangeComposer,
 	NodeChangeInverter,
 	NodeChangeRebaser,
-	NodeReviver,
 	referenceFreeFieldChangeRebaser,
 	RevisionMetadataSource,
 	RevisionIndexer,
@@ -63,4 +53,3 @@ export {
 	EditDescription,
 	revisionMetadataSourceFromInfo,
 } from "./modularChangeFamily";
-export { ITreeSchema, SchemaCollection, ViewSchema, IFieldSchema, Sourced } from "./view";

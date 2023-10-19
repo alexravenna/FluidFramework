@@ -4,7 +4,7 @@
  */
 import { strict as assert } from "assert";
 import { IContainer } from "@fluidframework/container-definitions";
-import { delay } from "@fluidframework/common-utils";
+import { delay } from "@fluidframework/core-utils";
 import { ITestObjectProvider } from "@fluidframework/test-utils";
 import { describeE2EDocRun, getCurrentBenchmarkType } from "@fluid-internal/test-version-utils";
 import {
@@ -33,11 +33,12 @@ describeE2EDocRun(scenarioTitle, (getTestObjectProvider, getDocumentInfo) => {
 		});
 		await documentWrapper.initializeDocument();
 		// Summarize the first time.
-		const summarizerClient = await documentWrapper.summarize(
+		const lastSummarizeClient = await documentWrapper.summarize(
 			documentWrapper.mainContainer,
 			undefined,
 			/* close container */ true,
 		);
+		summaryVersion = lastSummarizeClient.summaryVersion;
 	});
 
 	beforeEach(async function () {
@@ -71,7 +72,7 @@ describeE2EDocRun(scenarioTitle, (getTestObjectProvider, getDocumentInfo) => {
 				try {
 					this.summarizerClient = await documentWrapper.summarize(
 						this.container,
-						undefined,
+						summaryVersion,
 						/* close container */ false,
 					);
 
