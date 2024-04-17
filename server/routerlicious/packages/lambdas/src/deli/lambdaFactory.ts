@@ -80,18 +80,8 @@ export class DeliLambdaFactory
 		context: IContext,
 	): Promise<IPartitionLambda> {
 		const { documentId, tenantId } = config;
-		const sessionMetric = createSessionMetric(
-			tenantId,
-			documentId,
-			LumberEventName.SessionResult,
-			this.serviceConfiguration,
-		);
-		const sessionStartMetric = createSessionMetric(
-			tenantId,
-			documentId,
-			LumberEventName.StartSessionResult,
-			this.serviceConfiguration,
-		);
+		let sessionMetric: Lumber<LumberEventName.SessionResult> | undefined;
+		let sessionStartMetric: Lumber<LumberEventName.StartSessionResult> | undefined;
 
 		const messageMetaData = {
 			documentId,
@@ -131,9 +121,20 @@ export class DeliLambdaFactory
 				}
 			}
 
-			sessionMetric?.setProperty(
-				CommonProperties.isEphemeralContainer,
-				document?.isEphemeralContainer ?? false,
+			sessionMetric = createSessionMetric(
+				tenantId,
+				documentId,
+				LumberEventName.SessionResult,
+				this.serviceConfiguration,
+				document?.isEphemeralContainer,
+			);
+
+			sessionStartMetric = createSessionMetric(
+				tenantId,
+				documentId,
+				LumberEventName.StartSessionResult,
+				this.serviceConfiguration,
+				document?.isEphemeralContainer,
 			);
 
 			gitManager = await this.tenantManager.getTenantGitManager(tenantId, documentId);
