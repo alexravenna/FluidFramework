@@ -37,8 +37,7 @@ import {
 	getLumberBaseProperties,
 	LumberEventName,
 	Lumberjack,
-	CommonProperties,
-	type Lumber,
+	Lumber,
 } from "@fluidframework/server-services-telemetry";
 import { NoOpLambda, createSessionMetric, isDocumentValid, isDocumentSessionValid } from "../utils";
 import { CheckpointManager } from "./checkpointManager";
@@ -175,14 +174,14 @@ export class ScribeLambdaFactory
 					return new NoOpLambda(context);
 				}
 			}
-			
+
 			scribeSessionMetric = createSessionMetric(
 				tenantId,
 				documentId,
 				LumberEventName.ScribeSessionResult,
 				this.serviceConfiguration,
 				document?.isEphemeralContainer ?? false,
-			)
+			);
 
 			gitManager = await this.tenantManager.getTenantGitManager(tenantId, documentId);
 			summaryReader = new SummaryReader(

@@ -32,7 +32,6 @@ import {
 	LumberEventName,
 	Lumberjack,
 	getLumberBaseProperties,
-	CommonProperties,
 } from "@fluidframework/server-services-telemetry";
 import { NoOpLambda, createSessionMetric, isDocumentValid, isDocumentSessionValid } from "../utils";
 import { DeliLambda } from "./lambda";
